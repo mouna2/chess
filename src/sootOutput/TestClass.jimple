@@ -1,0 +1,36 @@
+public class TestClass extends java.lang.Object
+{
+
+    public static void example()
+    {
+        int i, temp$3;
+
+        i = 1;
+
+     label1:
+        if i <= 5 goto label2;
+
+        goto label3;
+
+     label2:
+        temp$3 = i + 1;
+
+        i = temp$3;
+
+        goto label1;
+
+     label3:
+        return;
+    }
+
+    public void <init>()
+    {
+        TestClass this;
+
+        this := @this: TestClass;
+
+        specialinvoke this.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+}
