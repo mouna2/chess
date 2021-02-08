@@ -29,7 +29,7 @@ import soot.jimple.toolkits.callgraph.Targets;
 import soot.options.Options;
 import soot.util.Chain;
 
-public class TestSootCallGraphChess extends SceneTransformer {
+public class TestSootVariablesChess extends SceneTransformer {
 
 	static LinkedList<String> excludeList;
 	
@@ -125,32 +125,7 @@ public class TestSootCallGraphChess extends SceneTransformer {
 		Statement st2= conn.createStatement();
 		Statement st3= conn.createStatement();
 
-//		String mainclass = "edu.ncsu.csc.itrust";
-//		 String mypath="edu.ncsu.csc.itrust"; 
-//		 String directory= "C:\\Users\\mouna\\new_workspace\\iTrust\\src"; 
-		 
-		 
-//		String mainclass = "org.jhotdraw";
-//		 String mypath="org.jhotdraw"; 
-//		 String directory= "C:\\Users\\mouna\\Downloads\\TraceGeneratorCDG-master\\TraceGeneratorCDG-master\\jhot"; 
-		 
-		
-//			String mainclass = "net.sourceforge.ganttproject";
-//			 String mypath="net.sourceforge.ganttproject"; 
-//			 String directory= "C:\\Users\\mouna\\new_workspace\\GanttProject\\src"; 
-			 
-			 
-		 
-//		 String mypath="net.sourceforge.ganttproject"; 
-//		 String directory= "C:\\Users\\mouna\\new_workspace\\GanttProject\\src"; 
-//	    String javapath = System.getProperty("java.class.path");
-//	    String jredir = System.getProperty("java.home")+"\\lib\\rt.jar";
-//	    String path = javapath+File.pathSeparator+jredir+File.pathSeparator+directory +File.pathSeparator+javapath;
-//	 
-//	    Scene.v().setSootClassPath(path);
-//	    System.out.println(path);
-//	    TestSootCallGraph analysis = new TestSootCallGraph();
-//	    PackManager.v().getPack("wjtp").add(new Transform("wjtp.TestSootCallGraph", analysis));
+
 		 
 		 
 		 
@@ -166,7 +141,7 @@ public class TestSootCallGraphChess extends SceneTransformer {
 	 
 	    Scene.v().setSootClassPath(path);
 	    System.out.println(path);
-	    TestSootCallGraphChess analysis = new TestSootCallGraphChess();
+	    TestSootVariablesChess analysis = new TestSootVariablesChess();
 	    PackManager.v().getPack("wjtp").add(new Transform("wjtp.TestSootCallGraph", analysis));
 	    
 	    
@@ -241,144 +216,152 @@ public class TestSootCallGraphChess extends SceneTransformer {
 
 	    List<String> localList = new ArrayList<String>(); 
 	    System.out.println("**********************************");
-	    for ( SootClass myclass: Scene.v().getClasses()) {
-//	    	System.out.println(myclass.getPackageName());
-	    	if(!myclass.toString().contains("java.") && !myclass.toString().contains("jdk.") && !myclass.toString().contains("javax") && !myclass.toString().contains("sun.") && 
-	    			myclass.getPackageName().contains(mypath)) {
-		    	System.out.println("--------------------------------------");
+	    try {
+	    	 for ( SootClass myclass: Scene.v().getClasses()) {
+//	 	    	System.out.println(myclass.getPackageName());
+	 	    	
+	 		    	System.out.println("--------------------------------------");
 
-		    	System.out.println(myclass);
-		    	System.out.println("--------------------------------------");
-		    	 String classname = null; String classid=null; 
-		    	ResultSet classes = st.executeQuery("SELECT * from classes where classname='"+myclass+"'"); 
-				while(classes.next()){
-					  classname = classes.getString("classname"); 
-					  classid= classes.getString("id"); 
-					 System.out.println(classname +" "+classid);
-		   		   }		
-		    	
-		    	for(SootMethod mymethod: myclass.getMethods()) {
-			    	System.out.println("//////////////////////////////////////////////////");
-			    	System.out.println(mymethod.getParameterTypes());
-			    	System.out.println(mymethod.getReturnType());
-		    		System.out.println("METHOD : "+mymethod);
-		    		String methodname = null; 
-		    		String methodid=null; 
-		    		String methodparams= mymethod.getParameterTypes().toString().replaceAll("\\s+",""); 
-		    		methodparams= methodparams.replaceAll("\\[", "("); 
-		    		methodparams= methodparams.replaceAll("\\]", ")"); 
-		    		System.out.println(methodparams);
-		    		methodname = mymethod.getName(); 
-		    		System.out.println(mymethod.getName());
-		    		if(methodname.equals("<init>")) methodname="-init-"; 
-		    		ResultSet methods = st.executeQuery("SELECT * from methods where methodname='"+methodname+methodparams+"'and classname='"+classname+"'"); 
-					while(methods.next()){
-						  methodname = methods.getString("methodname"); 
-						  methodid= methods.getString("id"); 
-						  System.out.println(methodname +" "+methodid);
+	 		    	System.out.println(myclass);
+	 		    	System.out.println("--------------------------------------");
+	 		    	 String classname = null; String classid=null; 
+	 		    	ResultSet classes = st.executeQuery("SELECT * from classes where classname='"+myclass+"'"); 
+	 				while(classes.next()){
+	 					  classname = classes.getString("classname"); 
+	 					  classid= classes.getString("id"); 
+	 					 System.out.println(classname +" "+classid);
+	 		   		   }		
+	 		    	
+	 		    	for(SootMethod mymethod: myclass.getMethods()) {
+	 			    	System.out.println("//////////////////////////////////////////////////");
+	 			    	System.out.println(mymethod.getParameterTypes());
+	 			    	System.out.println(mymethod.getReturnType());
+	 		    		System.out.println("METHOD : "+mymethod);
+	 		    		String methodname = null; 
+	 		    		String methodid=null; 
+	 		    		String methodparams= mymethod.getParameterTypes().toString().replaceAll("\\s+",""); 
+	 		    		methodparams= methodparams.replaceAll("\\[", "("); 
+	 		    		methodparams= methodparams.replaceAll("\\]", ")"); 
+	 		    		System.out.println(methodparams);
+	 		    		methodname = mymethod.getName(); 
+	 		    		System.out.println(mymethod.getName());
+	 		    		if(methodname.equals("<init>")) methodname="-init-"; 
+	 		    		ResultSet methods = st.executeQuery("SELECT * from methods where methodname='"+methodname+methodparams+"'and classname='"+classname+"'"); 
+	 					while(methods.next()){
+	 						  methodname = methods.getString("methodname"); 
+	 						  methodid= methods.getString("id"); 
+	 						  System.out.println(methodname +" "+methodid);
 
-			   		   }	
-		    		
-		    		Body body = null; 
-		    		try {
-			    		 body = mymethod.retrieveActiveBody(); 
+	 			   		   }	
+	 		    		
+	 		    		Body body = null; 
+	 		    		try {
+	 			    		 body = mymethod.retrieveActiveBody(); 
 
-		    		}catch(Exception e) {
-		    			
-		    		}
-		    		if(body!=null) {
-		    			
-		    			
-		    			 PatchingChain<Unit> units = body.getUnits();
-			    			
-		    			 for(Unit unit: units) {
-		    				 if(unit instanceof AbstractDefinitionStmt){
-		    					 AbstractDefinitionStmt myass = (AbstractDefinitionStmt) unit; 
-		    					ValueBox rightBox = myass.rightBox; 
-		    					ValueBox leftBox=myass.leftBox; 
-		    					System.out.println(unit);
-			    				 System.out.println("RIGHT ====> "+myass.rightBox);
-			    				 System.out.println("LEFT ====> "+myass.leftBox);
-			    				
-			    				
-			    				 if (leftBox.getValue() instanceof FieldRef) {
-			    					FieldRef field= (FieldRef) leftBox.getValue(); 
-			    					  System.out.println("WRITE  "+field.getFieldRef().name()+" TYPE===> "+field.getType()+" METHOD "+ mymethod.getName()+" CLASS "+myclass.toString()); 
-			    					  System.out.println();
-			    						String fieldid=null; 
-			    						String fieldname=null; 
-			    						String query="SELECT * from fieldclasses where fieldname='"+field.getFieldRef().name()+
-			    								"'and fieldtype='"+field.getType()+"'and classname='"+myclass.toString()+"'"; 
-			    						System.out.println(query);
-			    					  ResultSet res3 = st3.executeQuery(query); 
-			    						while(res3.next()){
-			    							  fieldid=res3.getString("id"); 
-			    							  fieldname=res3.getString("fieldname"); 
-			    							  System.out.println(fieldid);
-			    							  System.out.println(fieldname);
-			    							  
-			    							  String fieldItem=fieldid+"-"+classid+"-"+methodid+"0"; 
+	 		    		}catch(Exception e) {
+	 		    			
+	 		    		}
+	 		    		if(body!=null) {
+	 		    			
+	 		    			
+	 		    			 PatchingChain<Unit> units = body.getUnits();
+	 			    			
+	 		    			 for(Unit unit: units) {
+	 		    				 if(unit instanceof AbstractDefinitionStmt){
+	 		    					 AbstractDefinitionStmt myass = (AbstractDefinitionStmt) unit; 
+	 		    					ValueBox rightBox = myass.rightBox; 
+	 		    					ValueBox leftBox=myass.leftBox; 
+	 		    					System.out.println(unit);
+	 			    				 System.out.println("RIGHT ====> "+myass.rightBox);
+	 			    				 System.out.println("LEFT ====> "+myass.leftBox);
+	 			    				
+	 			    				
+	 			    				 if (leftBox.getValue() instanceof FieldRef) {
+	 			    					FieldRef field= (FieldRef) leftBox.getValue(); 
+	 			    					  System.out.println("WRITE  "+field.getFieldRef().name()+" TYPE===> "+field.getType()+" METHOD "+ mymethod.getName()+" CLASS "+myclass.toString()); 
+	 			    					  System.out.println();
+	 			    						String fieldid="0"; 
+	 			    						String fieldname=null; 
+	 			    						String query="SELECT * from fieldclasses where fieldname='"+field.getFieldRef().name()+
+	 			    								"'and fieldtype='"+field.getType()+"'and classname='"+myclass.toString()+"'"; 
+	 			    						System.out.println(query);
+	 			    					  ResultSet res3 = st3.executeQuery(query); 
+	 			    						while(res3.next()){
+	 			    							  fieldid=res3.getString("id"); 
+	 			    							  fieldname=res3.getString("fieldname"); 
+	 			    							  System.out.println(fieldid);
+	 			    							  System.out.println(fieldname);
+	 			    							  
+	 			    							  String fieldItem=fieldid+"-"+classid+"-"+methodid+"0"; 
 
-			    								if(fieldid!=null && fieldname!=null && methodid!=null && !fieldList.contains(fieldItem)) {
-													String statement= "INSERT INTO `sootfieldmethods`(`fieldclassid`, `fieldname`, `ownerclassname`, `ownerclassid`, "
-															+ "`ownermethodname`, `ownermethodid`,`read`)"
-															+ "VALUES ('"+fieldid +"','" +fieldname+"','" +myclass.toString()+"','" +classid+"','" +methodname+"','" +methodid+"','0')"; 
-													System.out.println(statement);
-													st.executeUpdate(statement);
-													fieldList.add(fieldItem); 
+	 			    								if(fieldname!=null && methodid!=null && !fieldList.contains(fieldItem)) {
+	 													String statement= "INSERT INTO `sootfieldmethods`(`fieldclassid`, `fieldname`, `ownerclassname`, `ownerclassid`, "
+	 															+ "`ownermethodname`, `ownermethodid`,`read`)"
+	 															+ "VALUES ('"+fieldid +"','" +fieldname+"','" +myclass.toString()+"','" +classid+"','" +methodname+"','" +methodid+"','0')"; 
+	 													System.out.println(statement);
+	 													st.executeUpdate(statement);
+	 													fieldList.add(fieldItem); 
 
-												}
+	 												}else {
+	 													System.out.println();
+	 												}
 
-			    				   		   }	
-			    					  
-			    					 } else if (rightBox.getValue() instanceof FieldRef) {
-					    					FieldRef field= (FieldRef) rightBox.getValue(); 
-				    					  System.out.println("READ  "+field.getFieldRef().name()+" TYPE===> "+field.getType()+" METHOD "+ mymethod.getName()+" CLASS "+myclass.toString()); 
-				    					  System.out.println();
-				    					  
-				    						String fieldid=null; 
-				    						String fieldname=null; 
-				    						String query="SELECT * from fieldclasses where fieldname='"+field.getFieldRef().name()+
-				    								"'and fieldtype='"+field.getType()+"'and classname='"+myclass.toString()+"'"; 
-				    						System.out.println(query);
-				    					  ResultSet res2 = st2.executeQuery(query); 
-				    						while(res2.next()){
-				    							  fieldid=res2.getString("id"); 
-				    							  fieldname=res2.getString("fieldname"); 
-				    							  System.out.println(fieldid);
-				    							  System.out.println(fieldname);
-				    							  
-				    							  String fieldItem=fieldid+"-"+classid+"-"+methodid+"1"; 
-				    								if(fieldid!=null && fieldname!=null && methodid!=null && !fieldList.contains(fieldItem)) {
-														String statement= "INSERT INTO `sootfieldmethods`(`fieldclassid`, `fieldname`, `ownerclassname`, `ownerclassid`, "
-																+ "`ownermethodname`, `ownermethodid`,`read`)"
-																+ "VALUES ('"+fieldid +"','" +fieldname+"','" +myclass.toString()+"','" +classid+"','" +methodname+"','" +methodid+"','1')"; 
-														System.out.println(statement);
-														st.executeUpdate(statement);
-														fieldList.add(fieldItem); 
+	 			    				   		   }	
+	 			    					  
+	 			    					 } else if (rightBox.getValue() instanceof FieldRef) {
+	 					    					FieldRef field= (FieldRef) rightBox.getValue(); 
+	 				    					  System.out.println("READ  "+field.getFieldRef().name()+" TYPE===> "+field.getType()+" METHOD "+ mymethod.getName()+" CLASS "+myclass.toString()); 
+	 				    					  System.out.println();
+	 				    					  
+	 				    						String fieldid="0"; 
+	 				    						String fieldname=null; 
+	 				    						String query="SELECT * from fieldclasses where fieldname='"+field.getFieldRef().name()+
+	 				    								"'and fieldtype='"+field.getType()+"'and classname='"+myclass.toString()+"'"; 
+	 				    						System.out.println(query);
+	 				    					  ResultSet res2 = st2.executeQuery(query); 
+	 				    						while(res2.next()){
+	 				    							  fieldid=res2.getString("id"); 
+	 				    							  fieldname=res2.getString("fieldname"); 
+	 				    							  System.out.println(fieldid);
+	 				    							  System.out.println(fieldname);
+	 				    							  
+	 				    							  String fieldItem=fieldid+"-"+classid+"-"+methodid+"1"; 
+	 				    								if(fieldname!=null && methodid!=null && !fieldList.contains(fieldItem)) {
+	 														String statement= "INSERT INTO `sootfieldmethods`(`fieldclassid`, `fieldname`, `ownerclassname`, `ownerclassid`, "
+	 																+ "`ownermethodname`, `ownermethodid`,`read`)"
+	 																+ "VALUES ('"+fieldid +"','" +fieldname+"','" +myclass.toString()+"','" +classid+"','" +methodname+"','" +methodid+"','1')"; 
+	 														System.out.println(statement);
+	 														st.executeUpdate(statement);
+	 														fieldList.add(fieldItem); 
 
-													}
+	 													}else {
+	 														System.out.println();
+	 													}
 
-				    				   		   }	
-				    					  
-			    					 }
-			    				 System.out.println();
-			    			
-		    				 }	
-		    			
+	 				    				   		   }	
+	 				    					  
+	 			    					 }
+	 			    				 System.out.println();
+	 			    			
+	 		    				 }	
+	 		    			
 
-			    		
-				    	}
-		    		}
-		   
-		    		
-		    	}
-		    	
-				
-		    	System.out.println("hey");
-	    	}
+	 			    		
+	 				    	}
+	 		    		}
+	 		   
+	 		    		
+	 		    	}
+	 		    	
+	 				
+	 		    	System.out.println("hey");
+	 	    	
 
+	 	    }
+	    }catch(Exception e) {
+	    	
 	    }
+	   
 	    System.out.println("over");
 	    //enable call graph
 	    //enableCHACallGraph();
