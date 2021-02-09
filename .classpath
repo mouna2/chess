@@ -19,7 +19,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/mouna/Downloads/soot-3.3.0.jar"/>
 	<classpathentry kind="lib" path="C:/Users/mouna/Downloads/antlrall.jar"/>
-	<classpathentry kind="lib" path="C:/Users/mouna/Downloads/soot-4.2.1.jar"/>
 	<classpathentry kind="lib" path="C:/Users/mouna/Downloads/soot-4.2.1-jar-with-dependencies.jar"/>
 	<classpathentry kind="lib" path="C:/Users/mouna/Downloads/jl5.jar"/>
 	<classpathentry kind="lib" path="C:/Users/mouna/Downloads/paddle-nightly.jar"/>

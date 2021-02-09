@@ -117,8 +117,35 @@ public class TestSootVariablesChess extends SceneTransformer {
 		Statement st3= conn.createStatement();
 
 
-		 
-		 
+		 HashMap<String, String> classHashmap = new HashMap<String, String>(); 
+ 		ResultSet classesSet = st.executeQuery("SELECT * from classes");
+ 		while(classesSet.next()) {
+ 			String id=classesSet.getString("id"); 
+ 			String classname = classesSet.getString("classname"); 
+ 			classHashmap.put(classname, id); 
+ 		}
+ 		
+ 		
+ 		 HashMap<String, String> methodHashmap = new HashMap<String, String>(); 
+  		ResultSet methodsSet = st.executeQuery("SELECT * from methods");
+  		while(methodsSet.next()) {
+  			String id=methodsSet.getString("id"); 
+  			String fullmethodname = methodsSet.getString("fullmethod"); 
+  			methodHashmap.put(fullmethodname, id); 
+  		}
+ 		
+  		 HashMap<String, String> fieldHashMap = new HashMap<String, String>(); 
+   		ResultSet classfields = st.executeQuery("SELECT * from fieldclasses");
+   		while(classfields.next()) {
+   			String id=classfields.getString("id"); 
+   			String fieldname = classfields.getString("fieldname"); 
+   			String fieldtype = classfields.getString("fieldtype"); 
+   			String ownerClassName = classfields.getString("classname"); 
+
+   			fieldHashMap.put(fieldname+","+fieldtype+","+ownerClassName, id); 
+   		}
+ 		
+
 		 
 			    excludeJDKLibrary();
 
@@ -216,12 +243,15 @@ public class TestSootVariablesChess extends SceneTransformer {
 	 		    	System.out.println(myclass);
 	 		    	System.out.println("--------------------------------------");
 	 		    	 String classname = null; String classid=null; 
-	 		    	ResultSet classes = st.executeQuery("SELECT * from classes where classname='"+myclass+"'"); 
-	 				while(classes.next()){
-	 					  classname = classes.getString("classname"); 
-	 					  classid= classes.getString("id"); 
-	 					 System.out.println(classname +" "+classid);
-	 		   		   }		
+	 		    	 classname=myclass.toString(); 
+	 		    	 classid=classHashmap.get(myclass.toString()); 
+	 		    	 
+//	 		    	ResultSet classes = st.executeQuery("SELECT * from classes where classname='"+myclass+"'"); 
+//	 				while(classes.next()){
+//	 					  classname = classes.getString("classname"); 
+//	 					  classid= classes.getString("id"); 
+//	 					 System.out.println(classname +" "+classid);
+//	 		   		   }		
 	 		    	
 	 		    	for(SootMethod mymethod: myclass.getMethods()) {
 	 			    	System.out.println("//////////////////////////////////////////////////");
@@ -237,13 +267,16 @@ public class TestSootVariablesChess extends SceneTransformer {
 	 		    		methodname = mymethod.getName(); 
 	 		    		System.out.println(mymethod.getName());
 	 		    		if(methodname.equals("<init>")) methodname="-init-"; 
-	 		    		ResultSet methods = st.executeQuery("SELECT * from methods where methodname='"+methodname+methodparams+"'and classname='"+classname+"'"); 
-	 					while(methods.next()){
-	 						  methodname = methods.getString("methodname"); 
-	 						  methodid= methods.getString("id"); 
-	 						  System.out.println(methodname +" "+methodid);
-
-	 			   		   }	
+	 		    		
+		 		    	 methodid=methodHashmap.get(classname+"."+methodname+methodparams); 
+	 		    		
+//	 		    		ResultSet methods = st.executeQuery("SELECT * from methods where methodname='"+methodname+methodparams+"'and classname='"+classname+"'"); 
+//	 					while(methods.next()){
+//	 						  methodname = methods.getString("methodname"); 
+//	 						  methodid= methods.getString("id"); 
+//	 						  System.out.println(methodname +" "+methodid);
+//
+//	 			   		   }	
 	 		    		
 	 		    		Body body = null; 
 	 		    		try {
@@ -272,16 +305,17 @@ public class TestSootVariablesChess extends SceneTransformer {
 	 			    					  System.out.println("WRITE  "+field.getFieldRef().name()+" TYPE===> "+field.getType()+" METHOD "+ mymethod.getName()+" CLASS "+myclass.toString()); 
 	 			    					  System.out.println();
 	 			    						String fieldid="0"; 
-	 			    						String fieldname=null; 
-	 			    						String query="SELECT * from fieldclasses where fieldname='"+field.getFieldRef().name()+
-	 			    								"'and fieldtype='"+field.getType()+"'and classname='"+myclass.toString()+"'"; 
-	 			    						System.out.println(query);
-	 			    					  ResultSet res3 = st3.executeQuery(query); 
-	 			    						while(res3.next()){
-	 			    							  fieldid=res3.getString("id"); 
-	 			    							  fieldname=res3.getString("fieldname"); 
-	 			    							  System.out.println(fieldid);
-	 			    							  System.out.println(fieldname);
+	 			    						String fieldname=field.getFieldRef().name(); 
+	 			    						fieldid=fieldHashMap.get(fieldname+","+field.getType()+","+myclass.toString()); 
+//	 			    						String query="SELECT * from fieldclasses where fieldname='"+field.getFieldRef().name()+
+//	 			    								"'and fieldtype='"+field.getType()+"'and classname='"+myclass.toString()+"'"; 
+//	 			    						System.out.println(query);
+//	 			    					  ResultSet res3 = st3.executeQuery(query); 
+//	 			    						while(res3.next()){
+//	 			    							  fieldid=res3.getString("id"); 
+//	 			    							  fieldname=res3.getString("fieldname"); 
+//	 			    							  System.out.println(fieldid);
+//	 			    							  System.out.println(fieldname);
 	 			    							  
 	 			    							  String fieldItem=fieldid+"-"+classid+"-"+methodid+"0"; 
 
@@ -290,12 +324,13 @@ public class TestSootVariablesChess extends SceneTransformer {
 	 															+ "`ownermethodname`, `ownermethodid`,`read`)"
 	 															+ "VALUES ('"+fieldid +"','" +fieldname+"','" +myclass.toString()+"','" +classid+"','" +methodname+"','" +methodid+"','0')"; 
 	 													System.out.println(statement);
-	 													st.executeUpdate(statement);
+//	 													st.executeUpdate(statement);
 	 													fieldList.add(fieldItem); 
 
-	 												}else {
-	 													System.out.println();
-	 												}
+//	 												}
+//	 			    								else {
+//	 													System.out.println();
+//	 												}
 
 	 			    				   		   }	
 	 			    					  
@@ -304,17 +339,18 @@ public class TestSootVariablesChess extends SceneTransformer {
 	 				    					  System.out.println("READ  "+field.getFieldRef().name()+" TYPE===> "+field.getType()+" METHOD "+ mymethod.getName()+" CLASS "+myclass.toString()); 
 	 				    					  System.out.println();
 	 				    					  
-	 				    						String fieldid="0"; 
-	 				    						String fieldname=null; 
-	 				    						String query="SELECT * from fieldclasses where fieldname='"+field.getFieldRef().name()+
-	 				    								"'and fieldtype='"+field.getType()+"'and classname='"+myclass.toString()+"'"; 
-	 				    						System.out.println(query);
-	 				    					  ResultSet res2 = st2.executeQuery(query); 
-	 				    						while(res2.next()){
-	 				    							  fieldid=res2.getString("id"); 
-	 				    							  fieldname=res2.getString("fieldname"); 
-	 				    							  System.out.println(fieldid);
-	 				    							  System.out.println(fieldname);
+	 				    					    String fieldid="0"; 
+		 			    						String fieldname=field.getFieldRef().name(); 
+		 			    						fieldid=fieldHashMap.get(fieldname+","+field.getType()+","+myclass.toString()); 
+//	 				    						String query="SELECT * from fieldclasses where fieldname='"+field.getFieldRef().name()+
+//	 				    								"'and fieldtype='"+field.getType()+"'and classname='"+myclass.toString()+"'"; 
+//	 				    						System.out.println(query);
+//	 				    					  ResultSet res2 = st2.executeQuery(query); 
+//	 				    						while(res2.next()){
+//	 				    							  fieldid=res2.getString("id"); 
+//	 				    							  fieldname=res2.getString("fieldname"); 
+//	 				    							  System.out.println(fieldid);
+//	 				    							  System.out.println(fieldname);
 	 				    							  
 	 				    							  String fieldItem=fieldid+"-"+classid+"-"+methodid+"1"; 
 	 				    								if(fieldname!=null && methodid!=null && !fieldList.contains(fieldItem)) {
@@ -322,12 +358,12 @@ public class TestSootVariablesChess extends SceneTransformer {
 	 																+ "`ownermethodname`, `ownermethodid`,`read`)"
 	 																+ "VALUES ('"+fieldid +"','" +fieldname+"','" +myclass.toString()+"','" +classid+"','" +methodname+"','" +methodid+"','1')"; 
 	 														System.out.println(statement);
-	 														st.executeUpdate(statement);
+//	 														st.executeUpdate(statement);
 	 														fieldList.add(fieldItem); 
 
-	 													}else {
-	 														System.out.println();
-	 													}
+//	 													}else {
+//	 														System.out.println();
+//	 													}
 
 	 				    				   		   }	
 	 				    					  

@@ -11,6 +11,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -194,7 +195,6 @@ public class TestSootMethodCallsChess extends SceneTransformer {
 //	    Scene.v().loadDynamicClasses();
         Scene.v().loadNecessaryClasses();
 //        Scene.v().loadBasicClasses();
-	    
 	    System.out.println("Application classes"+Scene.v().getApplicationClasses());
 	    System.out.println("classes "+Scene.v().getEntryPoints());
 //	    System.out.println("library classes "+Scene.v().getLibraryClasses());
@@ -266,120 +266,123 @@ public class TestSootMethodCallsChess extends SceneTransformer {
 	 						  methodname = methods.getString("methodname"); 
 	 						  methodid= methods.getString("id"); 
 	 						  System.out.println(methodname +" "+methodid);
+	 						 Body body = null; 
+	 				 		
+	 			    		try {
+	 				    		 body = mymethod.retrieveActiveBody(); 
+	 				    		 System.out.println(body);
+	 			    		}catch(Exception e) {
+	 			    			e.printStackTrace();
+	 			    		}
+	 			 	
+	 			 		    	
+	 			 					
+	 			 					
+	 			 					
+	 			 					
+	 			 		    		if(body!=null ) {
+	 			 		    			
+	 			 		    			
+	 			 		    			 PatchingChain<Unit> units = body.getUnits();
+	 			 			    			
+	 			 		    			 for(Unit unit: units) {
+	 			 		    				 System.out.println("UNIT"+unit.toString());
+//	 			 		    				 if(unit instanceof InvokeExpr){
+	 			 		    					 System.out.println(unit);
+	 			 		    					 System.out.println("========================>>>> " +unit);
+	 											Value right = null;
+	 											if(unit instanceof JAssignStmt)
+	 			 		    						 right=((JAssignStmt) unit).getRightOp(); 
+	 												System.out.println(right);
+	 												if(right instanceof InvokeExpr) {
+	 													 SootClass calleeClass = ((InvokeExpr) right).getMethodRef().getDeclaringClass(); 
+	 													 String calleeMethodName = ((InvokeExpr) right).getMethodRef().getName()+((InvokeExpr) right).getMethodRef().getParameterTypes(); 
+	 													 System.out.println(calleeMethodName);
+	 													 System.out.println("----");
+	 													 if(calleeClass.toString().contains("chess")) {
+	 														String callerMethod= mymethod.getName()+mymethod.getParameterTypes(); 
+	 														
+	 														
+	 														callerMethod = callerMethod.replaceAll("\\s+",""); 
+	 														calleeMethodName = calleeMethodName.replaceAll("\\s+",""); 
+	 														callerMethod = callerMethod.replaceAll("\\[","("); 
+	 														callerMethod = callerMethod.replaceAll("\\]",")"); 
+	 														
+	 														calleeMethodName = calleeMethodName.replaceAll("\\[","("); 
+	 														calleeMethodName = calleeMethodName.replaceAll("\\]",")");
+	 														
+	 														System.out.println("CALLER METHOD: "+callerMethod); 
+	 														System.out.println("CALLER CLASS: "+mycallerclass); 
+	 														System.out.println("CALLEE METHOD: "+calleeMethodName); 
+	 														System.out.println("CALLEE CLASS: "+calleeClass); 
+	 														
+	 														System.out.println("OVER");
+	 														ResultSet callers = st2.executeQuery("SELECT * from methods where methodname='"+callerMethod+"'and classname='"+mycallerclass+"'"); 
+	 														 String callerMethodName =null; 
+	 														 String callerMethodID = null; 							
+	 														 String callerClassID=null; 
 
+	 														while(callers.next()){
+	 									 						   callerMethodName = callers.getString("methodname"); 
+	 									 						   callerMethodID = callers.getString("id"); 
+	 									 						  callerClassID = callers.getString("classid"); 
+
+	 									 						  System.out.println(callerMethodName +" "+callerMethodID);
+
+	 									 			   		   }	
+	 														
+	 														
+	 														
+	 														
+	 														
+	 														
+	 														ResultSet callees = st4.executeQuery("SELECT * from methods where methodname='"+calleeMethodName+"'and classname='"+calleeClass+"'"); 
+	 														 String calleeMethodID = null; 
+	 														 String calleeClassID=null; 
+	 														while(callees.next()){
+	 									 						   calleeMethodName = callees.getString("methodname"); 
+	 									 						   calleeMethodID = callees.getString("id"); 
+	 																calleeClassID = callees.getString("classid"); 
+
+	 									 						  System.out.println(calleeMethodName +" "+calleeMethodID);
+
+	 									 			   		   }
+	 														
+	 														
+	 														 String callingrelationship=callerMethodName+"-"+callerMethodID+"-"+calleeMethodName+"-"+calleeMethodID; 
+	 						    								if(!methodcallsList.contains(callingrelationship) &&callerMethodID!=null && calleeMethodID!=null && calleeMethodID!=null && calleeClassID!=null) {
+	 																
+	 						    									String fullcaller= mycallerclass+"."+callerMethodName; 
+	 						    									String fullcallee= calleeClass+"."+calleeMethodName; 
+	 						    									String statement= "INSERT INTO `sootmethodcalls`(`callermethodid`, `callername`,`callerclass`, `callerclassid`, `fullcaller`, "
+	 																		+ "`calleemethodid`,`calleename`, `calleeclass`, `calleeclassid`, `fullcallee`)"
+	 																		+ "VALUES ('"+callerMethodID +"','" +callerMethodName +"','" +mycallerclass+"','" +callerClassID+"','" 
+	 																		+fullcaller+"','"+calleeMethodID+"','" +calleeMethodName+"','"+calleeClass+"','"+calleeClassID+"','"+fullcallee+"')";  
+	 																System.out.println(statement);
+	 																st5.executeUpdate(statement);
+	 																methodcallsList.add(callingrelationship); 
+
+	 															}
+	 														
+	 														
+	 													 }
+	 												}
+	 			 		    					 
+//	 			 		    				 }	
+	 			 		    			
+
+	 			 			    		
+	 		 				    	}
+	 			 		    		}
+	 				    		
+	 			 		    	}
+	 			 		    	
+	 			 				
+	 			 		    	System.out.println("hey");
+	 			 	    	
+	 			 		    	counter++;
 	 			   		   }	
-	 		    		
-	 		    		Body body = null; 
-	 		    		try {
-	 			    		 body = mymethod.retrieveActiveBody(); 
-	 		    		}catch(Exception e) {
-//	 		    			throw e; 
-	 		    		}
 	 					
-	 					
-	 					
-	 					
-	 		    		if(body!=null && ( counter!=1728 ||counter!=1727|| counter!=1729)) {
-	 		    			
-	 		    			
-	 		    			 PatchingChain<Unit> units = body.getUnits();
-	 			    			
-	 		    			 for(Unit unit: units) {
-	 		    				 System.out.println("UNIT"+unit.toString());
-//	 		    				 if(unit instanceof InvokeExpr){
-	 		    					 System.out.println(unit);
-	 		    					 System.out.println("========================>>>> " +unit);
-									Value right = null;
-									if(unit instanceof JAssignStmt)
-	 		    						 right=((JAssignStmt) unit).getRightOp(); 
-										System.out.println(right);
-										if(right instanceof InvokeExpr) {
-											 SootClass calleeClass = ((InvokeExpr) right).getMethodRef().getDeclaringClass(); 
-											 String calleeMethodName = ((InvokeExpr) right).getMethodRef().getName()+((InvokeExpr) right).getMethodRef().getParameterTypes(); 
-											 System.out.println(calleeMethodName);
-											 System.out.println("----");
-											 if(calleeClass.toString().contains("chess")) {
-												String callerMethod= mymethod.getName()+mymethod.getParameterTypes(); 
-												
-												
-												callerMethod = callerMethod.replaceAll("\\s+",""); 
-												calleeMethodName = calleeMethodName.replaceAll("\\s+",""); 
-												callerMethod = callerMethod.replaceAll("\\[","("); 
-												callerMethod = callerMethod.replaceAll("\\]",")"); 
-												
-												calleeMethodName = calleeMethodName.replaceAll("\\[","("); 
-												calleeMethodName = calleeMethodName.replaceAll("\\]",")");
-												
-												System.out.println("CALLER METHOD: "+callerMethod); 
-												System.out.println("CALLER CLASS: "+mycallerclass); 
-												System.out.println("CALLEE METHOD: "+calleeMethodName); 
-												System.out.println("CALLEE CLASS: "+calleeClass); 
-												
-												System.out.println("OVER");
-												ResultSet callers = st2.executeQuery("SELECT * from methods where methodname='"+callerMethod+"'and classname='"+mycallerclass+"'"); 
-												 String callerMethodName =null; 
-												 String callerMethodID = null; 							
-												 String callerClassID=null; 
-
-												while(callers.next()){
-							 						   callerMethodName = callers.getString("methodname"); 
-							 						   callerMethodID = callers.getString("id"); 
-							 						  callerClassID = callers.getString("classid"); 
-
-							 						  System.out.println(callerMethodName +" "+callerMethodID);
-
-							 			   		   }	
-												
-												
-												
-												
-												
-												
-												ResultSet callees = st4.executeQuery("SELECT * from methods where methodname='"+calleeMethodName+"'and classname='"+calleeClass+"'"); 
-												 String calleeMethodID = null; 
-												 String calleeClassID=null; 
-												while(callees.next()){
-							 						   calleeMethodName = callees.getString("methodname"); 
-							 						   calleeMethodID = callees.getString("id"); 
-														calleeClassID = callees.getString("classid"); 
-
-							 						  System.out.println(calleeMethodName +" "+calleeMethodID);
-
-							 			   		   }
-												
-												
-												 String callingrelationship=callerMethodName+"-"+callerMethodID+"-"+calleeMethodName+"-"+calleeMethodID; 
-				    								if(!methodcallsList.contains(callingrelationship) &&callerMethodID!=null && calleeMethodID!=null && calleeMethodID!=null && calleeClassID!=null) {
-														
-				    									String fullcaller= mycallerclass+"."+callerMethodName; 
-				    									String fullcallee= calleeClass+"."+calleeMethodName; 
-				    									String statement= "INSERT INTO `sootmethodcalls`(`callermethodid`, `callername`,`callerclass`, `callerclassid`, `fullcaller`, "
-																+ "`calleemethodid`,`calleename`, `calleeclass`, `calleeclassid`, `fullcallee`)"
-																+ "VALUES ('"+callerMethodID +"','" +callerMethodName +"','" +mycallerclass+"','" +callerClassID+"','" 
-																+fullcaller+"','"+calleeMethodID+"','" +calleeMethodName+"','"+calleeClass+"','"+calleeClassID+"','"+fullcallee+"')";  
-														System.out.println(statement);
-														st5.executeUpdate(statement);
-														methodcallsList.add(callingrelationship); 
-
-													}
-												
-												
-											 }
-										}
-	 		    					 
-//	 		    				 }	
-	 		    			
-
-	 			    		
- 				    	}
-	 		    		}
-		    		
-	 		    	}
-	 		    	
-	 				
-	 		    	System.out.println("hey");
-	 	    	
-	 		    	counter++;
 	 	    
 	    
 	    
