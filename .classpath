@@ -26,5 +26,17 @@
 	<classpathentry kind="lib" path="C:/Users/mouna/Downloads/jasminclasses.jar"/>
 	<classpathentry kind="lib" path="C:/Users/mouna/Downloads/jedd-runtime.jar"/>
 	<classpathentry kind="lib" path="C:/Users/mouna/Downloads/jedd-translator.jar"/>
+	<classpathentry kind="lib" path="libraries/antlr-runtime-4.7.2.jar"/>
+	<classpathentry kind="lib" path="libraries/antlrall.jar"/>
+	<classpathentry kind="lib" path="libraries/jasminclasses.jar"/>
+	<classpathentry kind="lib" path="libraries/jedd-runtime.jar"/>
+	<classpathentry kind="lib" path="libraries/jedd-translator.jar"/>
+	<classpathentry kind="lib" path="libraries/jl5.jar"/>
+	<classpathentry kind="lib" path="libraries/paddle-nightly.jar"/>
+	<classpathentry kind="lib" path="libraries/pdfbox-app-2.0.21.jar"/>
+	<classpathentry kind="lib" path="libraries/soot-3.3.0.jar"/>
+	<classpathentry kind="lib" path="libraries/soot-4.2.1-jar-with-dependencies.jar"/>
+	<classpathentry kind="lib" path="libraries/soot-4.2.1.jar"/>
+	<classpathentry kind="lib" path="libraries/swt-4.6.1.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

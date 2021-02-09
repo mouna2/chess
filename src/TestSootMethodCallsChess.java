@@ -358,7 +358,7 @@ public class TestSootMethodCallsChess extends SceneTransformer {
 																+ "VALUES ('"+callerMethodID +"','" +callerMethodName +"','" +mycallerclass+"','" +callerClassID+"','" 
 																+fullcaller+"','"+calleeMethodID+"','" +calleeMethodName+"','"+calleeClass+"','"+calleeClassID+"','"+fullcallee+"')";  
 														System.out.println(statement);
-//														st5.executeUpdate(statement);
+														st5.executeUpdate(statement);
 														methodcallsList.add(callingrelationship); 
 
 													}
@@ -387,7 +387,7 @@ public class TestSootMethodCallsChess extends SceneTransformer {
 	    } 
 	    
 	   }catch (Exception e ) {
-	 	    throw e; 
+	 	    
 	 	    }
 	    
 	   
